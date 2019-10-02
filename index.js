@@ -13,7 +13,7 @@ function _init(host){
 
 };
 
-cron.schedule('*/1 * * * *',function(){
+cron.schedule('*/5 * * * *',function(){
         _init({
                 kafkaHost:
                         "52.19.199.252:9092,52.19.199.252:9093,52.19.199.252:9094"
