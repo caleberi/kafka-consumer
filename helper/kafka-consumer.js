@@ -1,5 +1,6 @@
 const KafkaConsumer = require("kafka-node").Consumer;
 const Kafka = require("kafka-node");
+const fs = require('file-system');
 
 class KafkaConsumerInterface {
         constructor(host) {
@@ -25,7 +26,16 @@ class KafkaConsumerInterface {
                 return this.createConsumer(payload, (option = {})).on(
                         "message",
                         msg => {
-                                
+                                var today = new Date();
+                                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                                var newMsg = JSON.stringify(msg);
+                                fs.writeFileSync(
+                                        `logs/${msg.topic}_${time}.json`,newMsg,(err)=>{
+                                                if(err){
+                                                        throw new Error("Writing error");
+                                                }
+                                        }
+                                )
                         }
                 );
         }
