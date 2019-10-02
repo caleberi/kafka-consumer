@@ -33,3 +33,47 @@ const payload = [
 ];
 
 ```
+```js
+class KafkaConsumerInterface {
+        constructor(host) {
+                this.host = host;
+        }
+        // creates a kafka client with specified host
+        createClient(host) {
+                return new Kafka.KafkaClient(host, {
+                        sessionTimeout: 20,
+                        spinDelay: 10,
+                        retries: 2
+                });
+        }
+        //  return an instance of a kafka_consumer
+        createConsumer(payload, option = {}) {
+                var client = this.createClient(this.host);
+                return new KafkaConsumer(client, payload, option);
+        }
+
+        recievePayload(payload, option = {}) {
+                console.log(payload);
+                          // create consumer with the payload
+                return this.createConsumer(payload, (option = {})).on(
+                        "message",
+                        msg => {
+                                var today = new Date();
+                                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                                var newMsg = JSON.stringify(msg);
+                                fs.writeFileSync(
+                                        `logs/${msg.topic}_${time}.json`,newMsg,(err)=>{
+                                                if(err){
+                                                        throw new Error("Writing error");
+                                                }
+                                        }
+                                )
+                        }
+                );
+        }
+        
+ ```
+ 
+ 
+
+
